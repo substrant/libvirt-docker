@@ -24,6 +24,7 @@ docker run -it --rm \
     --cap-add=NET_RAW \
     --cap-add=DAC_OVERRIDE \
     --cap-add=SYS_PTRACE \
+    --cgroupns=host \
     -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
     -v ./data/images:/var/lib/libvirt/images \
     -v ./data/log:/var/log/libvirt/qemu \

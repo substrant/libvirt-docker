@@ -12,7 +12,18 @@ are dedicated Docker hosts.
 
 The following features have been tested and are confirmed to work:
 - KVM virtualization
+- UEFI/OVMF firmware
 - Booting virtual machines from ISOs
+- Installing Windows on a KVM virtual machine
+- Using libvirt NAT networking through VirtIO
+- VirtIO disk drivers
+
+What doesn't work (in unprivileged mode, at least):
+- Macvlan networking (broken in Docker NAT and host networking, requires access to hotplug
+  devices, which I haven't figured out how to get working)
+
+What hasn't been tested:
+- VirtIO PCI passthrough
 
 ## Definitions
 
@@ -142,7 +153,7 @@ following configuration:
 It is not recommended to disable these security mechanisms if you happen to be using them
 in your server environment.
 
-#### Additional Security Options
+#### Additional Options
 
 In order for the container to run properly, you may need to set the following security
 options:
@@ -153,7 +164,12 @@ options:
 | seccomp        | unconfined | Disable seccomp filtering*        |
 
 \* Disabling `seccomp` will grant the container extended privileges on already-open file
-descriptors
+descriptors.
+
+You will also have to override the control group namespace to the host on the container
+in order for the container to interact with the host's control groups with
+`--cgroupns=host`. If you are managing network devices on the host with Libvirt, you will
+have to change the Docker network mode to `host`.
 
 ### 2. Runnning the container in privileged mode
 
