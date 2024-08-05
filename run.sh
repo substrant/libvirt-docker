@@ -9,12 +9,12 @@ docker build -f ./docker/Dockerfile . --target libvirt \
     --build-arg TCP_PORT=$TCP_PORT \
     --build-arg LIBVIRT_UID=2001 \
     --build-arg LIBVIRT_GID=$(getent group libvirt | cut -d: -f3)
-#-v /proc/sys:/host_sys \
+
 docker run -it --rm \
     --name libvirt-docker \
     --device=/dev/kvm \
     --device=/dev/net/tun \
-    -v /proc/sys:/host_sys:rw \
+    -v /proc/sys:/host-procsys:rw \
     --security-opt systempaths=unconfined \
     --security-opt seccomp=unconfined \
     --security-opt apparmor=unconfined \

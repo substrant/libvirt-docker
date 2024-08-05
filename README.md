@@ -97,12 +97,12 @@ enough to get basic networking and KVM virtualization working.
 
 | Expose            | Mode | Function                     | Required |
 |-------------------|------|------------------------------|----------|
-| /proc/sys:rw      | 700  | Kernel configuration         | Yes*     |
-| /dev/kvm:rw       | 700  | Kernel Virtual Machine (KVM) | No       |
-| /sys/fs/cgroup:rw | 700  | Control group management     | No       |
-| /dev/net/tun:rw   | 700  | Virtual TAP interfaces       | No       |
+| /proc/sys         | 700  | Kernel configuration         | Yes*     |
+| /dev/kvm          | 700  | Kernel Virtual Machine (KVM) | No       |
+| /sys/fs/cgroup    | 700  | Control group management     | No       |
+| /dev/net/tun      | 700  | Virtual TAP interfaces       | No       |
 
-\* The `/proc/sys` directory should be exposed to the container as `/host_procsys`. The
+\* The `/proc/sys` directory should be exposed to the container as `/host-procsys`. The
 container will handle binding the directory to `/proc/sys` when it starts.
 
 #### Capabilities

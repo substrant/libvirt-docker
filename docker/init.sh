@@ -7,8 +7,8 @@ dbus-daemon --system --fork
 virtlockd &        # detaching like this might constipate linux, fix l8r
 virtlogd &
 
-# Create bind mount from /host_sys to /proc/sys
-mount --bind /host_sys /proc/sys
+# Create bind mount from /host-procsys to /proc/sys
+mount --bind /host-procsys /proc/sys
 
 # Set up the rest of the configuration crap that's on volumes
 # Yes, I know that this isn't ideal and that I should use virsh.
