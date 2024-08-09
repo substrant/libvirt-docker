@@ -1,0 +1,41 @@
+services:
+  libvirt:
+    # CPU restrictions will only apply to the libvirt service. You will have to manually
+    # manage how the CPU is allocated to virtual machines if you are using KVM. A good
+    # idea is to disable the range of CPUs that you want for VMs on the host.
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        LIBVIRT_UID: 1000
+        LIBVIRT_GID: 1000
+        TCP_PORT: 16509
+    # Note that we generally want to avoid this. In this case, it's necessary to do
+    # specific things such as initializing macvlan interfaces or passing through a PCI
+    # device. In this case, we have to run as privileged.
+    privileged: true
+    ports:
+      - "16509:16509"
+      - "5900-5999:5900-5999"
+    devices:
+      - /dev/kvm:/dev/kvm
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - SYS_ADMIN
+      - SYS_PTRACE
+      - SYS_MODULE
+      - NET_ADMIN
+      - NET_RAW
+      - DAC_OVERRIDE
+    cgroup: host
+    security_opt:
+      - systempaths=unconfined
+      - seccomp=unconfined
+    volumes:
+      - /proc/sys:/host-procsys:rw
+      - ./data/images:/var/lib/libvirt/images
+      - ./data/log:/var/log/libvirt
+      - ./data/conf/qemu:/etc/libvirt/qemu
+      - ./data/conf/storage:/etc/libvirt/storage
+    stop_signal: SIGKILL
+    restart: unless-stopped
