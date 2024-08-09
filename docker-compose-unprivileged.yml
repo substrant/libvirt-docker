@@ -11,15 +11,25 @@ services:
         LIBVIRT_UID: 1000
         LIBVIRT_GID: 1000
         TCP_PORT: 16509
-    # Note that we generally want to avoid this. In some cases, it's necessary to do
-    # specific things such as initializing macvlan interfaces or passing through a PCI
-    # device.
-    privileged: true
     ports:
       - "16509:16509"
       - "5900-5999:5900-5999"
+    devices:
+      - /dev/kvm:/dev/kvm
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - SYS_ADMIN
+      - SYS_PTRACE
+      - SYS_MODULE
+      - NET_ADMIN
+      - NET_RAW
+      - DAC_OVERRIDE
+    cgroup: host
+    security_opt:
+      - systempaths=unconfined
+      - seccomp=unconfined
     volumes:
-      - /sys/fs/cgroup:/host-cgroup:rw
+      - /proc/sys:/host-procsys:rw
       - ./data/images:/var/lib/libvirt/images
       - ./data/log:/var/log/libvirt
       - ./data/conf/qemu:/etc/libvirt/qemu

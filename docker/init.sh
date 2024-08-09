@@ -27,8 +27,10 @@ if ! [ -e /dev/kvm ]; then
     fi
 fi
 
-# Create bind mount from /host-procsys to /proc/sys
+# Create bind mount for specific directories or dont if
+# there are no directories to bind mount (imma just let it error idc)
 mount --bind /host-procsys /proc/sys
+mount --bind /host-cgroup /sys/fs/cgroup
 
 # Set up the rest of the configuration crap that's on volumes
 # Yes, I know that this isn't ideal and that I should use virsh.
