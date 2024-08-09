@@ -1,3 +1,4 @@
+version: "3.8"
 services:
   libvirt:
     # CPU restrictions will only apply to the libvirt service. You will have to manually
