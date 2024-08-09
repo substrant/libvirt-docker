@@ -7,6 +7,26 @@ dbus-daemon --system --fork
 virtlockd &        # detaching like this might constipate linux, fix l8r
 virtlogd &
 
+# If we have permission, check if KVM is loaded
+if ! [ -e /dev/kvm ]; then
+    # Load KVM
+    echo "Loading KVM module..."
+    modprobe kvm
+
+    # Load KVM for the specific CPU manufacturer
+    cpu_manufacturer=$(lscpu | grep -o "GenuineIntel\|AuthenticAMD")
+    echo "Loading KVM module for $cpu_manufacturer..."
+
+    # Load the correct module corresponding to the CPU
+    if [ "$cpu_manufacturer" = "GenuineIntel" ]; then
+        modprobe kvm_intel
+    elif [ "$cpu_manufacturer" = "AuthenticAMD" ]; then
+        modprobe kvm_amd
+    else
+        echo "Unsupported CPU manufacturer"
+    fi
+fi
+
 # Create bind mount from /host-procsys to /proc/sys
 mount --bind /host-procsys /proc/sys
 
