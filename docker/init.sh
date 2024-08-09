@@ -35,6 +35,7 @@ mount --bind /host-procsys /proc/sys
 # Can't care to fix it - it works fine for me and I dont see a reason to change it.
 
 if [ ! -e "/etc/libvirt/qemu/storage/default.xml" ]; then
+    storage_default=1
     mkdir -p /etc/libvirt/qemu/storage/autostart
     cp /base/storage-default.xml /etc/libvirt/qemu/storage/default.xml
 fi
@@ -66,9 +67,14 @@ while ! nc -z 127.0.0.1 $TCP_PORT; do
 done
 
 # Virsh do some cool stuff here
+if [ "$storage_default" = 1 ]; then
+    virsh pool-autostart default
+    virsh pool-start default
+fi
+
 if [ "$network_default" = 1 ]; then
-    virsh net-start default
     virsh net-autostart default
+    virsh net-start default
 fi
 
 # And now we wait for the daemon to die
